@@ -1,0 +1,89 @@
+vsim  format input:
+
+wz:
+sqrt(w0**2 * (1 + (z**2 / (w0**2 * omega0 / (2 * c))**2)))
+
+betaL:
+(z * gamma * delta_omega) / wz
+
+betaBAL:
+sqrt(1 + betaL**2)
+
+delta_omegaL:
+delta_omega / betaBAL
+
+omega0L:
+(omega0 + betaL / betaBAL**2 * x / (w0 * delta_omega))
+
+dOmega0L:
+omega0L - omega0
+
+Rz:
+z * (1 + ((omega0 * w0**2) / (2 * c))**2 / z**2)
+
+Rinvz:
+z / (z**2 + ((omega0 * w0**2) / (2 * c))**2)
+
+phi0L:
+(Rinvz * (y**2 + (x + z * gamma * (omega0 - omega0L))**2) * omega0L) / (2 * c) + 0.5 * phi2In * (-omega0 + omega0L)**2 + (1 / c) * omega0L * (x * gamma * (-(omega0 - omega0L)) + z * (1 - 0.5 * gamma**2 * (-(omega0 - omega0L))**2))
+
+phi1L:
+-phi2In * (omega0 - omega0L) + (1 / (2 * c)) * Rinvz * (y**2 + (x + z * gamma * (omega0 - omega0L))**2 - 2 * z * gamma * (x + z * gamma * (omega0 - omega0L)) * omega0L) + (1 / c) * ((x * gamma + z * gamma**2 * (omega0 - omega0L)) * omega0L + x * gamma * (-(omega0 - omega0L)) + z * (1 - 0.5 * gamma**2 * (-(omega0 - omega0L))**2))
+
+phi2L:
+(1 / (2 * c)) * (2 * x * gamma - 2 * Rinvz * x * z * gamma + c * phi2In + 2 * z * gamma**2 * omega0 - 2 * Rinvz * z**2 * gamma**2 * omega0 - 3 * z * gamma**2 * omega0L + 3 * Rinvz * z**2 * gamma**2 * omega0L)
+
+Real_At:
+(cos(omega0L * t) * w0 / wz * exp(-(x**2 / (wz**2 * betaBAL**2))) * exp(-(y**2 / wz**2)) * 1 / sqrt(1 + z**2 / ((omega0 * w0**2) / (2 * c))**2) * (exp(-((delta_omegaL**2 * (t - phi1L)**2) / (4 * (1 + delta_omegaL**4 * phi2L**2)))) * cos(phi0L - (delta_omegaL**4 * (t - phi1L)**2 * phi2L) / (4 * (1 + delta_omegaL**4 * phi2L**2)))) * 1 / (2 * sqrt(PI) * sqrt(1 / delta_omegaL**2)))
+
+ramp:
+(t>0 && t < tRamp)*(sin(PI*t/(2*tRamp))^2) + (t >= tRamp)*1
+
+
+
+
+constants:
+
+w0 = 1e-5
+lambda0 = 800e-9
+omega0 = 2*PI*c/lambda0
+phi2In = 0
+theta_pf = PI/3
+gamma = atan(theta_pf) / omega0
+zc = 0
+tau0 = 10e-15
+delta_omega = 2 / tau0
+tRamp = 0
+c = 2.99792458000000e+08
+
+#########################################################################
+
+
+In formulas,  x and y are transverse coordinants and z is propagation directions. Chirp is in xz-plane. 
+
+In Vsim, we propagate in x-direction. Maybe have chirp in y-direction. Polarize in x direction: set f(x) to my function in Vsim transverse f lower something. 
+In formulas change these variables:
+
+y -> 0
+
+x -> y
+
+z -> x
+
+####################################################################################
+
+
+in V-sim  current working file is called Dumy.pre
+
+
+
+
+
+
+
+
+
+
+
+
+

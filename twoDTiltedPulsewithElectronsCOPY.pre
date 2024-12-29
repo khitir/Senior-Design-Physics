@@ -1,0 +1,228 @@
+#######################################################
+#
+# This PRE file,
+#   twoDTiltedPulsewithElectronsCOPY.pre,
+# was generated from the simulation definition file,
+#   twoDTiltedPulsewithElectronsCOPY.sdf,
+# by the VSim VSIM-12.1-r40337-2023-03-31 build 40337 translator.
+# Any changes to this file will be lost if the
+# translator is rerun.
+#
+#######################################################
+
+#######################################################
+# User defined constants and parameters
+#######################################################
+
+$ import verbosity
+$ import mathphys
+
+$ c = (LIGHTSPEED)
+$ XLENGTH = (2.00000000000000e-04)
+$ YLENGTH = (1.00000000000000e-04)
+$ w0 = (1.00000000000000e-04)
+$ lambda0 = (800e-9)
+$ omega0 = (1.0*2*PI*c/lambda0)
+$ phi2In = (0.0)
+$ theta_pf = (1.0*PI/3)
+$ gamma = (1.0*atan(theta_pf) / omega0)
+$ zc = (0.0)
+$ tau0 = (10e-15)
+$ delta_omega = (1.0*2 / tau0)
+$ tRamp = (1.0*2*PI/omega0)
+$ b = (50*1e-15)
+
+#######################################################
+# Simulation definition from the basic settings
+#######################################################
+$ VPMW_DIELECTRIC_SHAPE_NAME_ARRAY = ""
+$ VPMW_DIELECTRIC_SHAPE_BOUNDARY_NAME_ARRAY = ""
+$ VPMW_DIELECTRIC_SHAPE_MATERIAL_ARRAY = ""
+$ VPMW_PERMITTIVITIES_DICT = ""
+
+$ VPMW_COORDINATE_SYSTEM = "cartesian"
+# cylindrical not found.
+$ VPMW_GRID_SPACING = "uniform"
+$ VPMW_NDIM = "2"
+$ VPMW_PRECISION = "double"
+$ VPMW_FIELD_INFRASTRUCTURE = vorpal
+$ VPMW_USE_GPU = False
+$ VPMW_NUM_CORES = 1
+$ VPMW_SIMULATION_TYPE = "electromagnetic"
+# electrostatic not found.
+# magnetostatic not found.
+# no field solver not found.
+# prescribed fields not found.
+# hybrid fluid solver not found.
+# constant fields not found.
+$ VPMW_BACKGROUND_PERMITTIVITY = "1.0"
+$ VPMW_DIELECTRIC_SOLVER = "point permittivity"
+$ VPMW_INCLUDE_PLASMA_DIELECTRIC = False
+# hybrid fluid solver.initial pressure not found.
+# hybrid fluid solver.resistivity not found.
+# hybrid fluid solver.gamma not found.
+# hybrid fluid solver.smoothing not found.
+$ VPMW_INCLUDE_PARTICLES = "True"
+$ VPMW_MAX_ELECTRON_DENSITY = "1.e18"
+# estimated min electron temperature (eV) not found.
+$ VPMW_MAX_ELECTRON_TEMP_EV = "1.0"
+$ VPMW_DUMP_NODAL_FIELDS = "True"
+$ VPMW_DEPOSITOR_KIND = "standard"
+# reduced not found.
+# monte carlo not found.
+# reactions not found.
+# reactions.collision order not found.
+$ VPMW_RESTORE_GRID_BNDRY = "True"
+$ VPMW_DECOMP = "default"
+$ VPM_PEC_NORMAL_INTERIOR = "solid"
+$ VPMW_PRECOMPUTE_INV_EPS_FIELD_NAME = "None"
+# use previously computed mesh.inverse epsilon field name not found.
+$ VPMW_PRECOMPUTE_LOSS_FACTOR_FIELD_NAME = "None"
+# use previously computed mesh.loss factor field name not found.
+$ VPMW_TOP_LEVEL_VERBOSITY = VPM_INFO
+$ VPMW_SIMULATION_NAME = twoDTiltedPulsewithElectronsCOPY
+$ VPMW_GRID_TYPE = UniformCartesian
+
+#######################################################
+# Import needed system macros
+#######################################################
+
+$ import VSim
+
+#######################################################
+# User defined functions
+#######################################################
+
+
+#######################################################
+# User defined space-time functions
+#######################################################
+
+$ wz = (sqrt(w0**2 * (1 + (x**2 / (w0**2 * omega0 / (2 * c))**2))))
+$ betaL = ((x * gamma * delta_omega) / wz)
+$ betaBAL = (sqrt(1 + betaL**2))
+$ delta_omegaL = (delta_omega / betaBAL)
+$ omega0L = ((omega0 + betaL / betaBAL**2 * y / (w0 * delta_omega)))
+$ dOmega0L = (omega0L - omega0)
+$ Rz = (x * (1 + ((omega0 * w0**2) / (2 * c))**2 / x**2))
+$ Rinvz = (x / (x**2 + ((omega0 * w0**2) / (2 * c))**2))
+$ phi0L = ((Rinvz * (0**2 + (y + x * gamma * (omega0 - omega0L))**2) * omega0L) / (2 * c) + 0.5 * phi2In * (-omega0 + omega0L)**2 + (1 / c) * omega0L * (y * gamma * (-(omega0 - omega0L)) + x * (1 - 0.5 * gamma**2 * (-(omega0 - omega0L))**2)))
+$ phi1L = (-phi2In * (omega0 - omega0L) + (1 / (2 * c)) * Rinvz * (0**2 + (y + x * gamma * (omega0 - omega0L))**2 - 2 * x * gamma * (y + x * gamma * (omega0 - omega0L)) * omega0L) + (1 / c) * ((y * gamma + x * gamma**2 * (omega0 - omega0L)) * omega0L + y * gamma * (-(omega0 - omega0L)) + x * (1 - 0.5 * gamma**2 * (-(omega0 - omega0L))**2)))
+$ phi2L = ((1 / (2 * c)) * (2 * y * gamma - 2 * Rinvz * y * x * gamma + c * phi2In + 2 * x * gamma**2 * omega0 - 2 * Rinvz * x**2 * gamma**2 * omega0 - 3 * x * gamma**2 * omega0L + 3 * Rinvz * x**2 * gamma**2 * omega0L))
+$ E_real = ((1)*(((cos(omega0L * (t-b)) * w0 / wz * exp(-(y**2 / (wz**2 * betaBAL**2))) * exp(-(0**2 / wz**2)) * 1 / sqrt(1 + x**2 / ((omega0 * w0**2) / (2 * c))**2) * (exp(-((delta_omegaL**2 * ((t-b) - phi1L)**2) / (4 * (1 + delta_omegaL**4 * phi2L**2)))) * cos(phi0L - (delta_omegaL**4 * ((t-b) - phi1L)**2 * phi2L) / (4 * (1 + delta_omegaL**4 * phi2L**2)))) * 1 / (2 * sqrt(PI) * sqrt(1 / delta_omegaL**2))))*((((t-b) > 0) * ((t-b) < tRamp)) * (sin(PI*(t-b)/(2*tRamp))**2) + ((t-b) >= tRamp)*1)))
+
+#######################################################
+#
+# Ordered blocks
+#
+#######################################################
+
+#######################################################
+# Translation of the grid
+#######################################################
+
+$ VPMW_BGN0 = 0.00000000000000e+00
+$ VPMW_BGN1 = -1.00000000000000e-04
+
+$ VPMW_L0 = XLENGTH - 0.0
+$ VPMW_L1 = YLENGTH - -0.0001
+
+$ VPMW_N0 = int(2048)
+$ VPMW_N1 = int(428)
+
+# Derived grid variables.  Here for partial processing
+$ VPMW_UB0P1 = VPMW_N0 + 1
+$ VPMW_UB1P1 = VPMW_N1 + 1
+$ VPMW_UB2P1 = VPMW_N2 + 1
+$ VPMW_END0 = VPMW_BGN0 + VPMW_L0
+$ VPMW_END1 = VPMW_BGN1 + VPMW_L1
+$ VPMW_END2 = VPMW_BGN2 + VPMW_L2
+# Average cell sizes
+$ VPMW_DL0 = VPMW_L0/VPMW_N0
+$ VPMW_DL1 = VPMW_L1/VPMW_N1
+$ VPMW_DL2 = VPMW_L2/VPMW_N2
+$ VPMW_DLI0 = 1./VPMW_DL0
+$ VPMW_DLI1 = 1./VPMW_DL1
+$ VPMW_DLI2 = 1./VPMW_DL2
+$ VPMW_DLISQ = VPMW_DLI0**2 + (VPMW_NDIM>1)*VPMW_DLI1**2 + (VPMW_NDIM>2)*VPMW_DLI2**2
+$ VPMW_DLI = math.sqrt(VPMW_DLISQ)
+
+$ VPMW_PERIODIC_DIRS = []
+
+# Requires VPMW_N0[1,2], VPMW_L0[1,2], VPMW_BGN0[1,2]
+#
+# For UniformCartesian, defines:
+#     VPM_NX, VPM_NY, VPM_NZ, VPM_LX, VPM_LY, VPM_LZ,
+#     VPM_BGNX, VPM_BGNY, VPM_BGNZ,
+#     VPM_ENDX, VPM_ENDY, VPM_ENDZ,
+#     VPM_NXP1, VPM_NYP1, VPM_NZP1,
+#     VPM_NXM1, VPM_NYM1, VPM_NZM1,
+#     VPM_DX, VPM_DY, VPM_DZ,
+#     VPM_DXI, VPM_DYI, VPM_DZI,
+#     VPM_DL, VPM_DLI
+# For Cylindrical, defines:
+#     VPM_NZ, VPM_NR, VPM_NPHI, VPM_LZ, VPM_LR, VPM_LPHI,
+#     VPM_BGNR, VPM_BGNR, VPM_BGNPHI,
+#     VPM_ENDZ, VPM_ENDR, VPM_ENDPHI,
+#     VPM_NZP1, VPM_NRP1, VPM_NPHIP1,
+#     VPM_NZM1, VPM_NRM1, VPM_NPHIM1,
+#     VPM_DZ, VPM_DR, VPM_DPHI,
+#     VPM_DZI, VPM_DRI, VPM_DPHII,
+#     VPM_DL, VPM_DLI
+setGridData()
+setPreviouslyComputedFields()
+
+
+#######################################################
+# Translation of the time group
+#######################################################
+
+$ VPMW_DMFRAC = "1.0"
+$ VPMW_CFL_NUMBER = "0.99"
+$ VPMW_DT = "0.0"
+$ VPMW_NSTEPS = "20000.0"
+$ VPMW_DUMP_PERIOD = "250.0"
+$ VPMW_DUMP_GROUP_SIZE = "1"
+
+# Requires VPMW_SIMULATION_TYPE
+# For Electromagnetic:
+#   if VPMW_DT not defined
+#     Requires LIGHTSPEED, DLI
+#     Will calculate VPMW_DT based on CFL
+# For Electrostatic:
+#   Requires VPMW_MAX_ELECTRON_DENSITY, VPMW_MAX_ELECTRON_TEMP_EV
+$ VPMW_NSTEPS = rint(VPMW_NSTEPS)
+$ VPMW_DUMP_PERIOD = rint(VPMW_DUMP_PERIOD)
+setTimingData()
+
+#######################################################
+#
+# Unordered blocks
+#
+#######################################################
+
+#######################################################
+# Translation of Boundary Conditions
+#######################################################
+
+addBoundaryLauncher(boundaryLauncher0, ElectricField, None, E_real, 0.0, lowerX)
+addMalBoundary(mal0, emField, upperX, 1E-5, 0.5)
+addElectricBoundary(pec0, emField, lowerY)
+addElectricBoundary(pec1, emField, upperY)
+
+#######################################################
+# Translation of Particles
+#######################################################
+
+addParticleSpeciesLoader(particleLoader0, electrons0, initializeOnly, relativeDensity, 1.0, grid, [1, 1, 1], functionalVelocity, 0.0, 0.0, 0.0, [0.00004, 0.0, 0.0], [0.000041953125, 4.6728971963e-7, 0.0])
+addParticleSpecies(electrons0, relBoris, 1.0, constantWeights, computedWeights, 1.0)
+addNodalExtrapNeed()
+
+#######################################################
+#
+# Finalize
+#
+#######################################################
+
+finalize()
+
